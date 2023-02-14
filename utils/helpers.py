@@ -1,4 +1,3 @@
-
 def separate_text(text):
     paragraphs = []
     words = text.split()

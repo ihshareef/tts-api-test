@@ -1,4 +1,4 @@
-import torch 
+import torch
 import sys
 
 sys.path.append('TTS_repo')
@@ -18,27 +18,27 @@ class CoreTTS:
         self.use_cuda = use_cuda
         # model paths
         TTS_MODEL = "models/checkpoint_100000.pth.tar"
-        TTS_CONFIG = "models/config.json"
+        TTS_CONFIG = "config/config.json"
         VOCODER_MODEL = "models/vocoder_model.pth.tar"
-        VOCODER_CONFIG = "models/config_vocoder.json"
+        VOCODER_CONFIG = "config/config_vocoder.json"
 
         # load configs
         self.TTS_CONFIG = load_config(TTS_CONFIG)
         self.VOCODER_CONFIG = load_config(VOCODER_CONFIG)
-        self.VOCODER_CONFIG.audio['stats_path'] = 'models/scale_stats.npy'
-        
-        # ap 
-        self.ap = AudioProcessor(self.TTS_CONFIG.audio)
-        self.ap_vocoder = AudioProcessor(self.VOCODER_CONFIG['audio'])
+        self.VOCODER_CONFIG.audio['stats_path'] = 'config/scale_stats.npy'
+
+        # ap
+        self.ap = AudioProcessor(**self.TTS_CONFIG.audio)
+        self.ap_vocoder = AudioProcessor(**self.VOCODER_CONFIG['audio'])
         self.scale_factor = [1,  self.VOCODER_CONFIG['audio']['sample_rate'] / self.ap.sample_rate]
-        
+
         # LOAD TTS MODEL
-        # multi speaker 
+        # multi speaker
         speaker_id = None
-        
+
         # load the model
         num_chars = len(phonemes) if self.TTS_CONFIG.use_phonemes else len(symbols)
-        self.model = setup_model(num_chars, len([]), TTS_CONFIG)
+        self.model = setup_model(num_chars, len([]), self.TTS_CONFIG)
         # load model state
         self.cp =  torch.load(TTS_MODEL, map_location=torch.device('cpu'))
         # load the model
@@ -46,21 +46,21 @@ class CoreTTS:
         if self.use_cuda:
             self.model.cuda()
         self.model.eval()
-        
+
         # set model stepsize
         if 'r' in self.cp:
             self.model.decoder.set_r(self.cp['r'])
-            
+
         # LOAD VOCODER MODEL
         self.vocoder_model = setup_generator(self.VOCODER_CONFIG)
-        self.vocoder_model.load_state_dict(torch.load(self.VOCODER_MODEL, map_location="cpu")["model"])
+        self.vocoder_model.load_state_dict(torch.load(VOCODER_MODEL, map_location="cpu")["model"])
         self.vocoder_model.remove_weight_norm()
         self.vocoder_model.inference_padding = 0
-        
+
         if use_cuda:
             self.vocoder_model.cuda()
         self.vocoder_model.eval()
-        
+
     def interpolate_vocoder_input(self, scale_factor, spec):
         """Interpolation to tolarate the sampling rate difference
         btw tts model and vocoder"""
@@ -84,9 +84,9 @@ class CoreTTS:
         if self.use_cuda:
             waveform = waveform.cpu()
             waveform = waveform.numpy()
-        
+
         waveform = waveform.squeeze()
-    
+
         rate=self.VOCODER_CONFIG.audio['sample_rate']
         if output_path is not None:
             sp.io.wavfile.write(output_path + ".wav", rate, waveform)

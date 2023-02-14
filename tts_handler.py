@@ -1,3 +1,4 @@
+from doctest import OutputChecker
 from core import CoreTTS
 from utils.helpers import separate_text
 import numpy as np
@@ -13,21 +14,20 @@ class TTSHandler:
         self.engine = CoreTTS()
         self.waveforms = []
 
-    def synthesize(self, message: str):
+    def synthesize(self, message: str) -> str:
         text_queue = separate_text(message)
-        waveforms = []
         filenames = []
         for text in text_queue:
             filename = "{}.wav".format(str(uuid.uuid4()))
             self.engine.tts(text, filename)
             filenames.append(filename)
-        self._get_concatenated_wav(filenames)       
-        
-    def _clear_files(self, filenames):
-        for filename in filenames: 
-            os.remove(filename)
+        return self._get_concatenated_wav(filenames)       
+
             
-    def _get_concatenated_wav(self, filenames, outfile_path="output_audio.wav"):
+    def _get_concatenated_wav(self, filenames):
+        
+        outfile_path = "file_{}.wav".format(str(uuid.uuid4()))
+        
         data = [] 
         for infile in filenames:
             w = wave.open(infile, 'rb')
@@ -39,4 +39,10 @@ class TTSHandler:
             output.writeframes(data[i][1])
         output.close()
         self._clear_files(filenames)
+        
+        return outfile_path
             
+        
+    def _clear_files(self, filenames):
+        for filename in filenames: 
+            os.remove(filename)

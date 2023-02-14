@@ -9,4 +9,5 @@ handler = TTSHandler()
 def synthesize(message: str):
     if handler is not None:
         print('Synthesizing message...')
-        handler.synthesize(message) 
+        output_file_path = handler.synthesize(message) 
+        print("Output file is {}".format(output_file_path))

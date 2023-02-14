@@ -16,4 +16,4 @@ wget https://www.dropbox.com/s/kf2kydzkri6tkk7/checkpoint_100000.pth.tar
 gdown --id 1X09hHAyAJOnrplCUMAdW_t341Kor4YR4 -O vocoder_model.pth.tar
 
 cd ..
-uvicorn main:app --reload
+# uvicorn main:app --reload

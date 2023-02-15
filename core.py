@@ -83,7 +83,7 @@ class CoreTTS:
             waveform = self.vocoder_model.inference(vocoder_input)
         if self.use_cuda:
             waveform = waveform.cpu()
-            waveform = waveform.numpy()
+        waveform = waveform.numpy()
 
         waveform = waveform.squeeze()
 

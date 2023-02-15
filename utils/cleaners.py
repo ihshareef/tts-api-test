@@ -112,10 +112,10 @@ def remove_dhivehi_suffixes(text):
     
 
 def dhivehi_cleaners(text):
-    text = transliterator.transliterate(text)
+    text = transliterator.transliterate_text(text)
+    text = remove_dhivehi_suffixes(text)
     text = expand_arabic_expressions(text)
     text = convert_to_ascii(text)
     text = lowercase(text)
     text = collapse_whitespace(text)
-    text = remove_dhivehi_suffixes(text)
     return text

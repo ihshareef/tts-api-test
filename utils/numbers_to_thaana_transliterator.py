@@ -106,6 +106,12 @@ class NumbersToThaanaTransliterator:
     def __init__(self):
         pass
 
+    def transliterate_text(self, text: str) -> str: 
+        words = text.split()
+        for idx, word in enumerate(words): 
+            if word.isnumeric():
+                words[idx] = self.transliterate(word)
+        return " ".join(words)
 
     def transliterate(self, number: str) -> str:
         number_array = self.convert_number_array_to_language(sub_divide_numbers_into_places(number))

@@ -1,6 +1,7 @@
 from doctest import OutputChecker
 from core import CoreTTS
 from utils.helpers import separate_text
+from utils.cleaners import dhivehi_cleaners
 import numpy as np
 import os
 from scipy.io.wavfile import read, write
@@ -15,6 +16,7 @@ class TTSHandler:
         self.waveforms = []
 
     def synthesize(self, message: str) -> str:
+        message = dhivehi_cleaners(message)
         text_queue = separate_text(message)
         filenames = []
         for text in text_queue:

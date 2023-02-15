@@ -89,5 +89,5 @@ class CoreTTS:
 
         rate=self.VOCODER_CONFIG.audio['sample_rate']
         if output_path is not None:
-            sp.io.wavfile.write(output_path + ".wav", rate, waveform)
+            sp.io.wavfile.write(output_path, rate, waveform)
         return alignment, mel_postnet_spec, stop_tokens, waveform

@@ -3,7 +3,7 @@ from core import CoreTTS
 from utils.helpers import separate_text
 import numpy as np
 import os
-# import scipy as sp
+from scipy.io.wavfile import read, write
 import uuid
 import wave
 
@@ -27,18 +27,16 @@ class TTSHandler:
     def _get_concatenated_wav(self, filenames):
         
         outfile_path = "file_{}.wav".format(str(uuid.uuid4()))
-        
-        data = [] 
-        for infile in filenames:
-            w = wave.open(infile, 'rb')
-            data.append([w.getparams(), w.readframes(w.getnframes())])
-            w.close()
-        output = wave.open(outfile_path, 'wb')
-        output.setparams(data[0][0])
-        for i in range(len(data)):
-            output.writeframes(data[i][1])
-        output.close()
+        concatenated_data = []
+        sr = None
+        for filename in filenames:
+            filename = "{}.wav".format(filename)
+            sr, x = read(filename)
+            concatenated_data.append(x)
+        z = np.concatenate(tuple(concatenated_data))
         self._clear_files(filenames)
+        
+        write(outfile_path, sr, z)
         
         return outfile_path
             

@@ -29,6 +29,18 @@ transliterator = NumbersToThaanaTransliterator()
 # Regular expression matching whitespace:
 _whitespace_re = re.compile(r"\s+")
 
+_suffixes = {
+    "ދޭށެވެ" : "ދޭން",
+    "ޑެވެ" : "ޑު",
+    "ށެވެ" : "ށް",
+    "ންނެވެ" : "ން",
+    "ނެވެ" : "ން",
+    "ކެވެ" : "އް",
+    "މެވެ" : "ން" ,
+    " އެވެ" : "",
+    "ތެވެ" : "ތް",
+}
+
 # List of (regular expression, replacement) pairs for abbreviations:
 _abbreviations = [
     (re.compile("\\b%s\\." % x[0], re.IGNORECASE), x[1])
@@ -92,10 +104,17 @@ def expand_arabic_expressions(text):
         text = re.sub(regex, replacement, text)
     return text
 
+def remove_dhivehi_suffixes(text):
+    for key, value in _suffixes.items():
+        text = text.replace(key, value)
+    return text
+    
+
 def dhivehi_cleaners(text):
     text = transliterator.transliterate(text)
     text = expand_arabic_expressions(text)
     text = convert_to_ascii(text)
     text = lowercase(text)
     text = collapse_whitespace(text)
+    text = remove_dhivehi_suffixes(text)
     return text

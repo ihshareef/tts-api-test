@@ -30,7 +30,7 @@ class TTSHandler:
         concatenated_data = []
         sr = None
         for filename in filenames:
-            filename = "{}.wav".format(filename)
+            filename = "{}".format(filename)
             sr, x = read(filename)
             concatenated_data.append(x)
         z = np.concatenate(tuple(concatenated_data))

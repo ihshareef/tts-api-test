@@ -5,7 +5,7 @@ def separate_text(text):
     char_count = 0
     for word in words:
         char_count += len(word)
-        if len(word) > 4:
+        if len(word) > 3:
             temp_paragraph.append(word)
         if char_count >= 250 or word == "\n":
             paragraphs.append(" ".join(temp_paragraph))

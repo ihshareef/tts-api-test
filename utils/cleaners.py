@@ -39,6 +39,7 @@ _suffixes = {
     "މެވެ" : "ން" ,
     " އެވެ" : "",
     "ތެވެ" : "ތް",
+    "ހެވެ" : "ސް"
 }
 
 # List of (regular expression, replacement) pairs for abbreviations:
